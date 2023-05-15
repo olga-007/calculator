@@ -40,12 +40,13 @@ dotBtn.disabled = true;
 
 const operationSection = addDiv(buttonBox);
 ['/', '*', '-', '+'].forEach((operation) => {
-    addButton(operationSection, operation);
+    const btn = addButton(operationSection, operation);
+    btn.disabled = true;
 });
 
 const commandSection = addDiv(buttonBox);
-const bkspBtn = addButton(commandSection, '\u2190');
+const bkspBtn = addButton(commandSection, '\u2190', 'btn-bksp');
 bkspBtn.disabled = true;
-const clearBtn = addButton(commandSection, 'C');
-clearBtn.disabled = true;
-addButton(commandSection, '=', 'btn-equals');
+const clearBtn = addButton(commandSection, 'C', 'btn-clear');
+const equalsBtn = addButton(commandSection, '=', 'btn-equals');
+equalsBtn.disabled = true;
