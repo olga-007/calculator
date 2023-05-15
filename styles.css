@@ -5,5 +5,86 @@
 }
 
 body {
+    background-color: lightslategray;
+}
+
+#container {
+    display: flex;
+    flex-direction: column;
+    margin: 30px auto;
+    padding: 15px;
+    width: 300px;
+    gap: 10px;
     background-color: lightgray;
+    border: 1px solid gray;
+    box-shadow: rgba(100, 100, 100, 0.2) 0px 7px 29px 0px;
+}
+
+.display {
+    padding: 10px;
+    height: 60px;
+    text-align: end;
+    background-color: rgb(233, 233, 233);
+    border: 1px solid rgb(150, 150, 150);
+}
+
+.button-box {
+    display: flex;
+    gap: 5px;
+}
+
+.button-box> * {
+    display: flex;
+    gap: 5px;
+    flex-direction: column;
+    width: 20%;
+}
+
+.digit-box {
+    width: 60%;
+}
+
+.digit-row {
+    display: flex;
+    gap: 5px;
+}
+
+button {
+    width: 100%;
+    height: 44px;
+    font-size: 15px;
+    transition-duration: 0.3s;
+    background-color: rgb(220, 220, 220);
+    border-radius: 3px;
+    border: 1px solid rgb(150, 150, 150);
+}
+
+.digit-row:last-child button {
+    width: 32%;
+}
+
+.digit-row:last-child button.btn-zero {
+    width: 68%;
+}
+
+.btn-equals {
+    flex: 1;
+    font-size: 24px;
+}
+
+.digit-box button {
+    background-color: rgb(230, 230, 230);
+}
+
+
+button:disabled {
+    box-shadow: none;
+    background-color: rgb(220, 220, 220);
+    border: 1px solid rgb(190, 190, 190);
+}
+
+button:hover:enabled {
+    background-color: #aebfcf;
+    border: 1px solid #94A3B2;
+    color: white;
 }
