@@ -53,7 +53,7 @@ const opFunctions = {
 
 function applyOperation() {
     const result = opFunctions[currentOp](num1, num2 === '' ? num1 : num2);
-    if (Number.isNaN(result)) {
+    if (isNaN(result)) {
         isError = true;
     }
     return result;
