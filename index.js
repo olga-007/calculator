@@ -75,7 +75,7 @@ function printOperation() {
             num1 = currentOp ? applyOperation() : num2;
             num2 = '';
         }
-        currentOp = this.innerText;
+        currentOp = isError ? '' : this.innerText;
         updateDisplay();
     }
 }
