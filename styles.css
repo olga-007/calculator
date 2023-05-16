@@ -25,7 +25,7 @@ body {
     padding: 10px;
     font-size: 19px;
     text-align: end;
-    background-color: rgb(233, 233, 233);
+    background-color: rgb(235, 235, 235);
     border: 1px solid rgb(170, 170, 170);
 }
 
@@ -57,7 +57,7 @@ button {
     font-size: 18px;
     transition-duration: 0.3s;
     transition-property: background-color, color;
-    background-color: rgb(221, 221, 221);
+    background-color: rgb(225, 225, 225);
     border-radius: 3px;
     border: 1px solid rgb(170, 170, 170);
 }
@@ -86,7 +86,7 @@ button.btn-bksp {
 
 .digit-box button {
     font-size: 16px;
-    background-color: rgb(230, 230, 230);
+    background-color: rgb(232, 232, 232);
 }
 
 button:disabled {
