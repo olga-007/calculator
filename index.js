@@ -1,10 +1,15 @@
+/* eslint-disable default-case */
+/* eslint-disable indent */
 // see https://www.theodinproject.com/lessons/foundations-calculator
 
-const MAX_TOTAL_LENGTH = 27;
+const MAX_TOTAL_LENGTH = 28;
+const DIVIDE = '/';
 const TIMES = '\u00D7';
+const SUBTRACT = '-';
+const ADD = '+';
 const DOT = '.';
 const BACKSPACE = '\u2190';
-const OPERATIONS = ['/', TIMES, '-', '+'];
+const OPERATIONS = [DIVIDE, TIMES, SUBTRACT, ADD];
 
 let display;
 let num1;
@@ -46,10 +51,10 @@ function divide(a, b) {
 }
 
 const opFunctions = {
-    '/': divide,
+    [DIVIDE]: divide,
     [TIMES]: multiply,
-    '-': subtract,
-    '+': add,
+    [SUBTRACT]: subtract,
+    [ADD]: add,
 };
 
 function applyOperation() {
@@ -67,11 +72,14 @@ function calculateFinal() {
         num1 = '';
         currentOp = '';
         updateDisplay();
+    } else if (num2.endsWith(DOT)) {
+        num2 = num2.slice(0, -DOT.length);
+        updateDisplay();
     }
     isFinalCalculated = true;
 }
 
-function printOperation() {
+function printOperation(opStr) {
     if (!isError && display.textContent.length < MAX_TOTAL_LENGTH) {
         if (!OPERATIONS.includes(display.textContent.at(-1))) {
             num1 = currentOp ? applyOperation() : num2;
@@ -80,39 +88,42 @@ function printOperation() {
             }
             num2 = '';
         }
-        currentOp = isError ? '' : this.innerText;
+        currentOp = isError ? '' : opStr;
         updateDisplay();
     }
 }
 
-function printDigit() {
+function printDigit(digitStr) {
     if (!isError && display.textContent.length < MAX_TOTAL_LENGTH) {
         if (isFinalCalculated) {
-            num2 = this.innerText; // overwrite
+            num2 = digitStr; // overwrite
             isFinalCalculated = false;
         } else if (num2 === '0') {
-            if (this.innerText !== '0') {
-                num2 = this.innerText;
+            if (digitStr !== '0') {
+                num2 = digitStr;
             }
         } else {
-            num2 += this.innerText;
+            num2 += digitStr;
         }
         updateDisplay();
     }
 }
 
 function printDot() {
-    if (!isError && display.textContent.length < MAX_TOTAL_LENGTH && !num2.includes(DOT)) {
-        let str = DOT;
-        if (num2 === '') {
+    if (!isError && display.textContent.length < MAX_TOTAL_LENGTH) {
+        if (isFinalCalculated) {
             // eslint-disable-next-line prefer-template
-            str = '0' + DOT;
-        }
-        if (isFinalCalculated) { // overwrite
-            num2 = str;
+            num2 = '0' + DOT; // overwrite
             isFinalCalculated = false;
-        } else if (display.textContent.length + str.length <= MAX_TOTAL_LENGTH) {
-            num2 += str;
+        } else if (!num2.includes(DOT)) {
+            let str = DOT;
+            if (num2 === '') {
+                // eslint-disable-next-line prefer-template
+                str = '0' + DOT;
+            }
+            if (display.textContent.length + str.length <= MAX_TOTAL_LENGTH) {
+                num2 += str;
+            }
         }
         updateDisplay();
     }
@@ -156,14 +167,15 @@ const digitSection = addDiv(buttonBox, 'digit-box');
 
 for (let i = 2; i >= 0; i--) {
     const row = addDiv(digitSection, 'digit-row');
-    for (let j = 0; j < 3; j++) {
-        const btn = addButton(row, i * 3 + j + 1);
-        btn.addEventListener('click', printDigit);
+    for (let j = 1; j < 4; j++) {
+        const digit = i * 3 + j;
+        const btn = addButton(row, digit);
+        btn.addEventListener('click', () => printDigit(digit.toString()));
     }
 }
 const row = addDiv(digitSection, 'digit-row');
 const zeroBtn = addButton(row, 0, 'btn-zero');
-zeroBtn.addEventListener('click', printDigit);
+zeroBtn.addEventListener('click', () => printDigit('0'));
 
 const dotBtn = addButton(row, DOT);
 dotBtn.addEventListener('click', printDot);
@@ -172,7 +184,7 @@ const operationSection = addDiv(buttonBox);
 
 OPERATIONS.forEach((operation) => {
     const btn = addButton(operationSection, operation);
-    btn.addEventListener('click', printOperation);
+    btn.addEventListener('click', () => printOperation(operation));
 });
 
 const commandSection = addDiv(buttonBox);
@@ -185,5 +197,52 @@ clearBtn.addEventListener('click', initDisplay);
 
 const equalsBtn = addButton(commandSection, '=', 'btn-equals');
 equalsBtn.addEventListener('click', calculateFinal);
+
+window.addEventListener('keydown', (e) => {
+    if (e.code.startsWith('Digit')) {
+        printDigit(e.code.at('Digit'.length));
+        return;
+    }
+
+    if (e.code.startsWith('Numpad')) {
+        const numpadCode = e.code.substring('Numpad'.length);
+        if (numpadCode.length === 1 && '1234567890'.includes(numpadCode)) {
+            printDigit(numpadCode);
+            return;
+        }
+    }
+
+    switch (e.code) {
+        case 'NumpadDivide':
+        case 'Slash':
+            printOperation(DIVIDE);
+            break;
+        case 'NumpadMultiply':
+        case 'KeyX':
+            printOperation(TIMES);
+            break;
+        case 'NumpadSubtract':
+        case 'Minus':
+            printOperation(SUBTRACT);
+            break;
+        case 'NumpadAdd':
+            printOperation(ADD);
+            break;
+        case 'NumpadDecimal':
+        case 'Period':
+            printDot();
+            break;
+        case 'Backspace':
+            backspace();
+            break;
+        case 'KeyC':
+            initDisplay();
+            break;
+        case 'NumpadEnter':
+        case 'Enter':
+            calculateFinal();
+            break;
+    }
+});
 
 initDisplay();
