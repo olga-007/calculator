@@ -60,7 +60,7 @@ const opFunctions = {
 function applyOperation() {
     const result = opFunctions[currentOp](num1, num2 === '' ? num1 : num2);
     // eslint-disable-next-line no-restricted-globals
-    if (isNaN(result)) {
+    if (!isFinite(result)) {
         isError = true;
     }
     return result.toString();
