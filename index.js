@@ -2,6 +2,7 @@
 
 const MAX_TOTAL_LENGTH = 27;
 const TIMES = '\u00D7';
+const DOT = '.';
 const BACKSPACE = '\u2190';
 const OPERATIONS = ['/', TIMES, '-', '+'];
 
@@ -53,10 +54,11 @@ const opFunctions = {
 
 function applyOperation() {
     const result = opFunctions[currentOp](num1, num2 === '' ? num1 : num2);
+    // eslint-disable-next-line no-restricted-globals
     if (isNaN(result)) {
         isError = true;
     }
-    return result;
+    return result.toString();
 }
 
 function calculateFinal() {
@@ -73,6 +75,9 @@ function printOperation() {
     if (!isError && display.textContent.length < MAX_TOTAL_LENGTH) {
         if (!OPERATIONS.includes(display.textContent.at(-1))) {
             num1 = currentOp ? applyOperation() : num2;
+            if (num1.endsWith(DOT)) {
+                num1 = num1.slice(0, -DOT.length);
+            }
             num2 = '';
         }
         currentOp = isError ? '' : this.innerText;
@@ -91,6 +96,23 @@ function printDigit() {
             }
         } else {
             num2 += this.innerText;
+        }
+        updateDisplay();
+    }
+}
+
+function printDot() {
+    if (!isError && display.textContent.length < MAX_TOTAL_LENGTH && !num2.includes(DOT)) {
+        let str = DOT;
+        if (num2 === '') {
+            // eslint-disable-next-line prefer-template
+            str = '0' + DOT;
+        }
+        if (isFinalCalculated) { // overwrite
+            num2 = str;
+            isFinalCalculated = false;
+        } else if (display.textContent.length + str.length <= MAX_TOTAL_LENGTH) {
+            num2 += str;
         }
         updateDisplay();
     }
@@ -133,8 +155,8 @@ const row = addDiv(digitSection, 'digit-row');
 const zeroBtn = addButton(row, 0, 'btn-zero');
 zeroBtn.addEventListener('click', printDigit);
 
-const dotBtn = addButton(row, '.');
-dotBtn.disabled = true;
+const dotBtn = addButton(row, DOT);
+dotBtn.addEventListener('click', printDot);
 
 const operationSection = addDiv(buttonBox);
 
