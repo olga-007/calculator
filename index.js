@@ -118,6 +118,16 @@ function printDot() {
     }
 }
 
+function backspace() {
+    if (!isError && !isFinalCalculated && num2.length > 0) {
+        num2 = num2.slice(0, -1);
+        if (num2 === '' && !currentOp) { // the display is empty
+            num2 = '0';
+        }
+        updateDisplay();
+    }
+}
+
 function addElement(type, parent, cssClass) {
     const element = document.createElement(type);
     if (cssClass) {
@@ -168,7 +178,7 @@ OPERATIONS.forEach((operation) => {
 const commandSection = addDiv(buttonBox);
 
 const bkspBtn = addButton(commandSection, BACKSPACE, 'btn-bksp');
-bkspBtn.disabled = true;
+bkspBtn.addEventListener('click', backspace);
 
 const clearBtn = addButton(commandSection, 'C', 'btn-clear');
 clearBtn.addEventListener('click', initDisplay);
