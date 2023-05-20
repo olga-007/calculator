@@ -18,8 +18,12 @@ let currentOp;
 let isFinalCalculated;
 let isError;
 
+function composeDisplayString() {
+    return num1 + currentOp + num2;
+}
+
 function updateDisplay() {
-    display.textContent = num1 + currentOp + num2;
+    display.textContent = composeDisplayString();
 }
 
 function initDisplay() {
@@ -71,24 +75,30 @@ function calculateFinal() {
         num2 = applyOperation();
         num1 = '';
         currentOp = '';
-        updateDisplay();
-    } else if (num2.endsWith(DOT)) {
-        num2 = num2.slice(0, -DOT.length);
-        updateDisplay();
+    } else {
+        num2 = (+num2).toString();
     }
+    updateDisplay();
     isFinalCalculated = true;
 }
 
 function printOperation(opStr) {
-    if (!isError && display.textContent.length < MAX_TOTAL_LENGTH) {
-        if (!OPERATIONS.includes(display.textContent.at(-1))) {
-            num1 = currentOp ? applyOperation() : num2;
-            if (num1.endsWith(DOT)) {
-                num1 = num1.slice(0, -DOT.length);
-            }
+    if (!isError && display.textContent.length <= MAX_TOTAL_LENGTH) {
+        if (OPERATIONS.includes(display.textContent.at(-1))) {
+            currentOp = opStr;
+        } else if (currentOp) {
+            num1 = applyOperation();
             num2 = '';
+            currentOp = isError ? '' : opStr;
+        } else {
+            num2 = (+num2).toString();
+
+            if (num2.length < MAX_TOTAL_LENGTH - 1) {
+                num1 = num2;
+                num2 = '';
+                currentOp = opStr;
+            }
         }
-        currentOp = isError ? '' : opStr;
         updateDisplay();
     }
 }
@@ -132,7 +142,7 @@ function printDot() {
 function backspace() {
     if (!isError && !isFinalCalculated && num2.length > 0) {
         num2 = num2.slice(0, -1);
-        if (num2 === '' && !currentOp) { // the display is empty
+        if (composeDisplayString().length === 0) {
             num2 = '0';
         }
         updateDisplay();
