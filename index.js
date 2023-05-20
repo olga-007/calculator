@@ -71,15 +71,17 @@ function applyOperation() {
 }
 
 function calculateFinal() {
-    if (currentOp) {
-        num2 = applyOperation();
-        num1 = '';
-        currentOp = '';
-    } else {
-        num2 = (+num2).toString();
+    if (!isError) {
+        if (currentOp) {
+            num2 = applyOperation();
+            num1 = '';
+            currentOp = '';
+        } else {
+            num2 = (+num2).toString();
+        }
+        updateDisplay();
+        isFinalCalculated = true;
     }
-    updateDisplay();
-    isFinalCalculated = true;
 }
 
 function printOperation(opStr) {
@@ -165,6 +167,11 @@ function addDiv(parent, cssClass) {
 function addButton(parent, text, cssClass) {
     const button = addElement('button', parent, cssClass);
     button.innerText = text;
+    button.tabIndex = -1;
+    button.addEventListener('keydown', (e) => {
+        e.preventDefault();
+        e.target.blur();
+    });
     return button;
 }
 
