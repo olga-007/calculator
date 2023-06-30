@@ -5,13 +5,15 @@
 }
 
 body {
+    display: flex;
     background-color: lightslategray;
+    height: 50vh;
 }
 
 #container {
     display: flex;
     flex-direction: column;
-    margin: 30px auto;
+    margin: auto;
     padding: 15px 8px;
     width: 360px;
     gap: 10px;
